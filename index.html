@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دعوة زفاف أحمد وسارة - Signia by Hilton</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دعوة زفاف أحمد وسارة - Signia by Hilton</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Cairo:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
             perspective: 1000px;
         }
 
-        /* حاوية شاشة الهاتف */
+        /* حاوية شاشة الهاتف الافتراضية لشاشات العرض الكبيرة */
         .phone-container {
             width: 100%;
             max-width: 420px;
@@ -49,6 +49,22 @@
             scroll-behavior: smooth;
             border: 8px solid #ffffff;
             z-index: 10;
+        }
+
+        /* التعديل الجذري: ملء الشاشة بالكامل وإلغاء أي حواف بيضاء أو هوامش عند فتح الموقع من الهاتف المحمول */
+        @media (max-width: 480px) {
+            body {
+                background: var(--bg-rose);
+            }
+            .phone-container {
+                max-width: 100% !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                height: -webkit-fill-available !important; /* لضمان التوافق مع متصفحات الآيفون */
+                border: none !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
         }
 
         /* ====== نظام شاشة فيديو الظرف ====== */
@@ -104,7 +120,7 @@
             background-color: rgba(255, 255, 255, 0.9);
             border: 1px solid var(--accent-pink);
             border-radius: 50%;
-            display: none; /* يتم تفعيله وإظهاره بالجافا سكريبت بعد فتح الظرف */
+            display: none; 
             justify-content: center;
             align-items: center;
             color: #7c5357;
@@ -296,14 +312,14 @@
             <i class="fa-solid fa-music"></i>
         </div>
 
-        <audio id="weddingAudio" loop prelaod="auto">
+        <audio id="weddingAudio" loop preload="auto">
             <source src="bg-mp3.mp3" type="audio/mpeg">
             متصفحك لا يدعم تشغيل الصوت.
         </audio>
 
         <div class="envelope-video-screen" id="envelopeVideoScreen">
             <div class="invisible-seal-btn" onclick="startEnvelopeVideo()"></div>
-            <video id="envelopeVideo" playsinline muted>
+            <video id="envelopeVideo" playsinline muted preload="auto" webkit-playsinline>
                 <source src="card1.mp4" type="video/mp4">
                 متصفحك لا يدعم تشغيل الفيديو.
             </video>
@@ -312,7 +328,7 @@
         <div class="invitation-body" id="invitationBody">
             
             <div class="video-hero-section">
-                <video autoplay muted loop playsinline id="invitationVideo">
+                <video autoplay muted loop playsinline preload="auto" webkit-playsinline id="invitationVideo">
                     <source src="The first.mp4" type="video/mp4">
                     متصفحك لا يدعم تشغيل الفيديو.
                 </video>
@@ -397,7 +413,7 @@
                             <label>هل ستسعدنا بحضورك؟</label>
                             <div class="radio-group">
                                 <label><input type="radio" name="attend3d" checked> نعم، بكل سرور</label>
-                                <label><input type="radio" name="attend3d"> للأسف، لا أستطيع</label>
+                                <label><input type="radio" name="attend3d"> للأسف, لا أستطيع</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -432,35 +448,30 @@
         window.addEventListener('DOMContentLoaded', () => {
             createGlobalPetals();
             
-            // انتهاء فيديو فتح الظرف لتفجير باقي المحتوى
             const envVideo = document.getElementById('envelopeVideo');
             envVideo.onended = function() {
                 revealInvitationContent();
             };
         });
 
-        // دالة تشغيل فيديو الظرف وتشغيل الموسيقى الخلفية فور النقر
         function startEnvelopeVideo() {
             const envVideo = document.getElementById('envelopeVideo');
             const sealBtn = document.querySelector('.invisible-seal-btn');
             const audioTrack = document.getElementById('weddingAudio');
             const musicBtn = document.getElementById('musicControlBtn');
             
-            // إخفاء الختم الوهمي لمنع التكرار
             if(sealBtn) sealBtn.style.display = 'none';
             
-            // تشغيل الموسيقى فوراً
             if(audioTrack) {
                 audioTrack.play().then(() => {
                     if(musicBtn) {
-                        musicBtn.classList.add('show', 'playing'); // إظهار الزر وبدء أنيميشن الدوران
+                        musicBtn.classList.add('show', 'playing'); 
                     }
                 }).catch(error => {
                     console.log("المتصفح يطلب تفاعلاً إضافياً للصوت:", error);
                 });
             }
             
-            // تشغيل فيديو الظرف
             if(envVideo) {
                 envVideo.play().catch(error => {
                     console.log("خطأ في تشغيل فيديو الظرف:", error);
@@ -469,7 +480,6 @@
             }
         }
 
-        // دالة كتم وتشغيل الموسيقى يدوياً من الزر العائم
         function toggleMusic() {
             const audioTrack = document.getElementById('weddingAudio');
             const musicBtn = document.getElementById('musicControlBtn');
@@ -486,7 +496,6 @@
             }
         }
 
-        // إخفاء شاشة الفيديو والانتقال إلى الصفحة الرئيسية للدعوة
         function revealInvitationContent() {
             const videoScreen = document.getElementById('envelopeVideoScreen');
             videoScreen.classList.add('fade-out');
@@ -502,7 +511,6 @@
                 mainVideo.play().catch(error => console.log("تحذير تشغيل فيديو الخلفية الداخلي:", error));
             }
 
-            // ضمان ظهور زر الموسيقى إن لم يكن قد ظهر بعد
             const musicBtn = document.getElementById('musicControlBtn');
             if(musicBtn) musicBtn.classList.add('show');
 
@@ -510,7 +518,6 @@
             internalContainer.addEventListener('scroll', triggerScrollReveal);
         }
 
-        // نظام أنيميشن التمرير (Scroll Reveal)
         function triggerScrollReveal() {
             const reveals = document.querySelectorAll('.scroll-reveal');
             const container = document.getElementById('phoneContainer');
@@ -524,7 +531,6 @@
             });
         }
 
-        // العداد التنازلي الموجه لتاريخ 20 يونيو 2026
         const weddingTargetTime = new Date("June 20, 2026 20:30:00").getTime();
 
         setInterval(function() {
@@ -542,7 +548,6 @@
             document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
         }, 1000);
 
-        // توليد بتلات الورد المتطايرة ديناميكياً
         function createGlobalPetals() {
             const container = document.getElementById('globalPetals');
             const petalCount = 35; 

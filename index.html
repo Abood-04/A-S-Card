@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دعوة زفاف أحمد وسارة - Signia by Hilton</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دعوة زفاف أحمد وسارة - Signia by Hilton</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@1&family=Cairo:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -32,11 +32,11 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             perspective: 1000px;
         }
 
-        /* حاوية شاشة الهاتف */
+        /* حاوية شاشة الهاتف الافتراضية لشاشات العرض الكبيرة */
         .phone-container {
             width: 100%;
             max-width: 420px;
@@ -44,16 +44,33 @@
             background-color: var(--bg-rose);
             box-shadow: 0 30px 60px rgba(0,0,0,0.25);
             border-radius: 40px;
-            overflow-y: hidden;
+            overflow-y: auto; /* تم تعديلها لفتح التمرير دائماً ومنع التجمد */
             position: relative;
             scroll-behavior: smooth;
             border: 8px solid #ffffff;
             z-index: 10;
         }
 
-        /* ====== نظام شاشة فيديو الظرف ====== */
+        /* ملء الشاشة بالكامل وإلغاء أي حواف بيضاء عند فتح الموقع من الجوال */
+        @media (max-width: 480px) {
+            body {
+                background: var(--bg-rose);
+            }
+            .phone-container {
+                max-width: 100% !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                height: -webkit-fill-available !important;
+                border: none !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                overflow-y: auto !important; /* ضمان التمرير على الجوال */
+            }
+        }
+
+        /* ====== نظام شاشة فيديو الظرف (ثابتة فوق المحتوى لمنع التمرير بالبداية) ====== */
         .envelope-video-screen {
-            position: absolute;
+            position: fixed; /* تعديل لمنع النزول قبل التفاعل */
             top: 0;
             left: 0;
             width: 100%;
@@ -64,6 +81,14 @@
             justify-content: center;
             align-items: center;
             transition: opacity 1s ease, transform 1s ease;
+        }
+
+        /* ضبط حجم فيديو الظرف بداخل الشاشة الثابتة */
+        @media (min-width: 481px) {
+            .envelope-video-screen {
+                position: absolute;
+                border-radius: 32px;
+            }
         }
 
         .envelope-video-screen video {
@@ -94,9 +119,9 @@
             pointer-events: none;
         }
 
-        /* ====== زر التحكم بالموسيقى العائم الجديد ====== */
+        /* ====== زر التحكم بالموسيقى العائم ====== */
         .music-control-btn {
-            position: absolute;
+            position: fixed; /* تم تحويله إلى fixed ليتحرك بشكل صحيح مع الشاشة الكاملة */
             bottom: 25px;
             left: 25px;
             width: 45px;
@@ -104,7 +129,7 @@
             background-color: rgba(255, 255, 255, 0.9);
             border: 1px solid var(--accent-pink);
             border-radius: 50%;
-            display: none; /* يتم تفعيله وإظهاره بالجافا سكريبت بعد فتح الظرف */
+            display: none; 
             justify-content: center;
             align-items: center;
             color: #7c5357;
@@ -115,11 +140,16 @@
             transition: all 0.3s ease;
         }
         
+        @media (min-width: 481px) {
+            .music-control-btn {
+                position: absolute;
+            }
+        }
+
         .music-control-btn.show {
             display: flex;
         }
 
-        /* حركة الدوران للزر عند تشغيل الموسيقى */
         .music-control-btn.playing i {
             animation: rotateMusicBtn 3.5s linear infinite;
         }
@@ -288,6 +318,14 @@
 </head>
 <body>
 
+    <div class="envelope-video-screen" id="envelopeVideoScreen">
+        <div class="invisible-seal-btn" onclick="startEnvelopeVideo()"></div>
+        <video id="envelopeVideo" playsinline muted preload="auto" webkit-playsinline>
+            <source src="card1.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+    </div>
+
     <div class="phone-container" id="phoneContainer">
 
         <div class="global-petals-container" id="globalPetals"></div>
@@ -296,23 +334,15 @@
             <i class="fa-solid fa-music"></i>
         </div>
 
-        <audio id="weddingAudio" loop prelaod="auto">
+        <audio id="weddingAudio" loop preload="auto">
             <source src="bg-mp3.mp3" type="audio/mpeg">
             متصفحك لا يدعم تشغيل الصوت.
         </audio>
 
-        <div class="envelope-video-screen" id="envelopeVideoScreen">
-            <div class="invisible-seal-btn" onclick="startEnvelopeVideo()"></div>
-            <video id="envelopeVideo" playsinline muted>
-                <source src="card1.mp4" type="video/mp4">
-                متصفحك لا يدعم تشغيل الفيديو.
-            </video>
-        </div>
-
         <div class="invitation-body" id="invitationBody">
             
             <div class="video-hero-section">
-                <video autoplay muted loop playsinline id="invitationVideo">
+                <video autoplay muted loop playsinline preload="auto" webkit-playsinline id="invitationVideo">
                     <source src="The first.mp4" type="video/mp4">
                     متصفحك لا يدعم تشغيل الفيديو.
                 </video>
@@ -397,7 +427,7 @@
                             <label>هل ستسعدنا بحضورك؟</label>
                             <div class="radio-group">
                                 <label><input type="radio" name="attend3d" checked> نعم، بكل سرور</label>
-                                <label><input type="radio" name="attend3d"> للأسف، لا أستطيع</label>
+                                <label><input type="radio" name="attend3d"> للأسف, لا أستطيع</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -432,35 +462,34 @@
         window.addEventListener('DOMContentLoaded', () => {
             createGlobalPetals();
             
-            // انتهاء فيديو فتح الظرف لتفجير باقي المحتوى
             const envVideo = document.getElementById('envelopeVideo');
             envVideo.onended = function() {
                 revealInvitationContent();
             };
+            
+            // ربط نظام الـ Scroll Reveal بحاوية الهاتف مباشرة لضمان الأنيميشن عند النزول
+            const internalContainer = document.getElementById('phoneContainer');
+            internalContainer.addEventListener('scroll', triggerScrollReveal);
         });
 
-        // دالة تشغيل فيديو الظرف وتشغيل الموسيقى الخلفية فور النقر
         function startEnvelopeVideo() {
             const envVideo = document.getElementById('envelopeVideo');
             const sealBtn = document.querySelector('.invisible-seal-btn');
             const audioTrack = document.getElementById('weddingAudio');
             const musicBtn = document.getElementById('musicControlBtn');
             
-            // إخفاء الختم الوهمي لمنع التكرار
             if(sealBtn) sealBtn.style.display = 'none';
             
-            // تشغيل الموسيقى فوراً
             if(audioTrack) {
                 audioTrack.play().then(() => {
                     if(musicBtn) {
-                        musicBtn.classList.add('show', 'playing'); // إظهار الزر وبدء أنيميشن الدوران
+                        musicBtn.classList.add('show', 'playing'); 
                     }
                 }).catch(error => {
                     console.log("المتصفح يطلب تفاعلاً إضافياً للصوت:", error);
                 });
             }
             
-            // تشغيل فيديو الظرف
             if(envVideo) {
                 envVideo.play().catch(error => {
                     console.log("خطأ في تشغيل فيديو الظرف:", error);
@@ -469,7 +498,6 @@
             }
         }
 
-        // دالة كتم وتشغيل الموسيقى يدوياً من الزر العائم
         function toggleMusic() {
             const audioTrack = document.getElementById('weddingAudio');
             const musicBtn = document.getElementById('musicControlBtn');
@@ -486,7 +514,6 @@
             }
         }
 
-        // إخفاء شاشة الفيديو والانتقال إلى الصفحة الرئيسية للدعوة
         function revealInvitationContent() {
             const videoScreen = document.getElementById('envelopeVideoScreen');
             videoScreen.classList.add('fade-out');
@@ -494,23 +521,18 @@
             const body = document.getElementById('invitationBody');
             body.classList.add('show');
             
-            const internalContainer = document.getElementById('phoneContainer');
-            internalContainer.style.overflowY = 'auto';
-            
             const mainVideo = document.getElementById('invitationVideo');
             if(mainVideo) {
                 mainVideo.play().catch(error => console.log("تحذير تشغيل فيديو الخلفية الداخلي:", error));
             }
 
-            // ضمان ظهور زر الموسيقى إن لم يكن قد ظهر بعد
             const musicBtn = document.getElementById('musicControlBtn');
             if(musicBtn) musicBtn.classList.add('show');
 
+            // إطلاق أنيميشن العناصر الأولى فوراً بعد فتح الكارت
             setTimeout(triggerScrollReveal, 100);
-            internalContainer.addEventListener('scroll', triggerScrollReveal);
         }
 
-        // نظام أنيميشن التمرير (Scroll Reveal)
         function triggerScrollReveal() {
             const reveals = document.querySelectorAll('.scroll-reveal');
             const container = document.getElementById('phoneContainer');
@@ -524,7 +546,6 @@
             });
         }
 
-        // العداد التنازلي الموجه لتاريخ 20 يونيو 2026
         const weddingTargetTime = new Date("June 20, 2026 20:30:00").getTime();
 
         setInterval(function() {
@@ -542,7 +563,6 @@
             document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
         }, 1000);
 
-        // توليد بتلات الورد المتطايرة ديناميكياً
         function createGlobalPetals() {
             const container = document.getElementById('globalPetals');
             const petalCount = 35; 
